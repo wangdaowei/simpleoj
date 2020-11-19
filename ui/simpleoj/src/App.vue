@@ -1,15 +1,45 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <el-menu
+        :default-active="activeIndex2"
+        class="el-menu-demo"
+        router mode="horizontal"
+        @select="handleSelect"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+        style="padding-left: 100px"
+    >
+      <el-menu-item v-for="(item,i) in navList" :key="i" :index="item.name">
+        <template slot="title">
+          <i class="el-icon-s-platform"></i>
+          <span> {{ item.navItem }}</span>
+        </template>
+
+      </el-menu-item>
+    </el-menu>
+    <div ><router-view></router-view></div>
   </div>
 </template>
 <script>
 
   export default {
+    data(){
+      return{navList:[
+          {name:'/components/page/Main',navItem:'首页'},
+          {name:'/components/page/ProblemList',navItem:'题库'},
+          {name:'/components/page/',navItem:'提交记录'},
+        ]}
+    },
     components: {
       // 挂载Home组件
 
     },
+    methods:{
+      handleSelect(key, keyPath) {
+        console.log(key, keyPath);
+      }
+    }
   };
 </script>
 <style>

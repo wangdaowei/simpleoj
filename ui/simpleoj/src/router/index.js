@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import ProblemList from "@/components/page/ProblemList";
+import ProblemDetail from "@/components/page/ProblemDetail";
 // 引入路由插件
 Vue.use(Router);
 
@@ -21,5 +23,13 @@ export default new Router({
         },
       ],
     },
+    {
+      path:'/components/page/ProblemList',
+      component:ProblemList
+    },{
+      path:'/components/page/ProblemDetail',
+      name:'ProblemDetail',
+      component:ProblemDetail
+    }
   ],
 });

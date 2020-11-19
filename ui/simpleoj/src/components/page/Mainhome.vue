@@ -35,7 +35,7 @@
                     <span> {{ selectedTitle.titleExample }}</span>
                 </div>
            </el-collapse-item>
-            <el-collapse-item title="描述2" name="4">
+            <el-collapse-item title="描述2" name="3">
                 <div>
                     <span> {{ selectedTitle.titleExample2 }}</span>
                 </div>

@@ -6,6 +6,7 @@
                  :key="mode.value" :label="mode.label" :value="mode.value">
       </el-option>
     </el-select>
+    <div></div>
     <textarea ref="textarea"></textarea>
   </div>
 </template>
