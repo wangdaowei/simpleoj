@@ -7,14 +7,15 @@
       </el-option>
     </el-select>
     <div></div>
-    <textarea ref="textarea"></textarea>
+    <textarea ref="textarea" @change="submitTextarea"></textarea>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 // 引入全局实例
 import _CodeMirror from 'codemirror'
-
+// 加载bus实现组件通信
+import bus from '../../utils/bus';
 // 核心样式
 import 'codemirror/lib/codemirror.css'
 // 引入主题后还需要在 options 中指定主题才会生效
@@ -135,6 +136,13 @@ export default {
   }
   },
   methods: {
+    submitTextarea(){
+      console.log(this.textarea);
+      // 通过bus发送信息
+      bus.$emit('textarea', this.textarea);
+
+    },
+
     // 初始化
     _initialize () {
       // 初始化编辑器实例，传入需要被实例化的文本域对象和默认配置
@@ -145,9 +153,10 @@ export default {
       // 支持双向绑定
       this.coder.on('change', (coder) => {
         this.code = coder.getValue()
-
+        
         if (this.$emit) {
-          this.$emit('input', this.code)
+          //console.log('input change!!!')
+          bus.$emit('input', this.code)
         }
       })
 
@@ -184,7 +193,7 @@ export default {
       const label = this._getLanguage(val).label.toLowerCase()
 
       // 允许父容器通过以下函数监听当前的语法值
-      this.$emit('language-change', label)
+      bus.$emit('language-change', label)
     }
   },
   watch: {

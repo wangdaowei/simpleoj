@@ -10,7 +10,6 @@
       <div class="header-user-con">
         <div class="username">
           <h3>{{ username }}</h3>
-          <div v-html="content"></div>
         </div>
       </div>
     </div>

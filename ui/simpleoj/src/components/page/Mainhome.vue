@@ -35,31 +35,31 @@
                     <span> {{ selectedTitle.titleExample }}</span>
                 </div>
            </el-collapse-item>
-            <el-collapse-item title="描述2" name="3">
+            <el-collapse-item title="描述2" name="4">
                 <div>
                     <span> {{ selectedTitle.titleExample2 }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="提交状态" name="4">
+            <el-collapse-item title="提交状态" name="5">
                 <div>
                     <span> {{ selectedTitle.submitStatus }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="输入" name="4">
+            <el-collapse-item title="输入" name="6">
                 <div>
                     <span> {{ selectedTitle.input }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="输出" name="4">
+            <el-collapse-item title="输出" name="7">
                 <div>
                     <span> {{ selectedTitle.output }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="预期结果" name="4">
+            <el-collapse-item title="预期结果" name="8">
                 <div>
                     <span> {{ selectedTitle.rightOutput }}</span>
                 </div>
@@ -70,11 +70,11 @@
       
       <!-- 编辑器及提交信息 -->
       <el-col :span="12">
-            <div id="Codemirrorapp">
+            <div id="Codemirrorapp" >
                 <CodemirrorApp />
             </div>
 
-            <el-button class="submitButon" type="primary" icon="el-icon-s-promotion">提交</el-button>
+            <el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button>
       </el-col>
 
 
@@ -92,10 +92,12 @@
 
     
       return {
+        url:'http://localhost:8181',
+        language: 'java',
         //试题栏激活列表
         activeNames: ['1','2','3'],
-
-        selectedTitleId: '',
+        input: '',
+	selectedTitleId: '',
         test: 'ceshishuju',
         options: [],
         outMessage:'',
@@ -145,10 +147,23 @@
     },
     mounted(){
         const _this = this
-        axios.get('http://localhost:8181/title/findAll/').then(function(resp){
+        axios.get(this.url+'/title/findAll/').then(function(resp){
             console.log(resp)
             _this.options = resp.data
         })
+
+        //获取编辑框输入的字符
+        bus.$on('input', msg => {
+            //console.log(msg)
+            this.input=msg
+        });
+
+        
+        //获取选择的语音种类
+        bus.$on('language-change', msg => {
+            console.log(msg)
+            this.language=msg
+        });
     },
     methods: {
 
@@ -158,6 +173,33 @@
             console.log(this.options)
             console.log(this.value)
 
+
+        },
+
+        submitTitle(){
+            if(this.selectedTitle.titleId==''){
+              alert("请先选择题目再提交！");
+              return;
+            }
+            console.log(this.input)
+            axios.post(this.url+'/title/submit/',{
+              //选题
+              titleId: this.selectedTitle.titleId,
+              //输入内容
+              input: this.input,
+              language: this.language
+            })
+            .then(function(res){
+              console.log(res.data);
+              console.log(res.data.description);
+              console.log(res.data.errorCode);
+              
+              
+              
+            })
+            .catch(function(err){
+              console.log(err);
+            });
         },
     },
   };
