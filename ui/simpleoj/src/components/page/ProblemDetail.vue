@@ -1,9 +1,9 @@
 <template>
   <div style="width: 100%;height: 100%">
-    <el-container>
-      <el-header style="background-color: #cccccc;height: 20px"><p>PROBLEM DETAIL:{{problemId}}</p></el-header>
-      <el-container>
-        <el-main style="background-color: aquamarine;height: 100%;width:0">
+    <el-container style="height: 100%">
+<!--      <el-header style="background-color: #cccccc;height: 20px"><p>PROBLEM DETAIL:{{problemId}}</p></el-header>-->
+      <el-container style="height: 100%">
+        <el-main style="background-color: aquamarine;width:0">
           <el-collapse  class="el-collapse" v-model="activeNames" >
           <el-collapse-item  title="题目：" name="1">
             <div>
@@ -54,9 +54,12 @@
           </el-collapse-item>
         </el-collapse>
         </el-main>
-        <el-container style="width: 0">
-          <el-main style="background-color: bisque;height: 100%"><CodemirrorApp /></el-main>
-          <el-footer style="background-color: dodgerblue;height: 20%"></el-footer>
+        <el-container style="width: 0;">
+          <el-main style="background-color: bisque;height:80%"><CodemirrorApp /></el-main>
+
+          <el-footer style="background-color: dodgerblue;float: bottom;height: 20%">
+            <el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button>
+          </el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -66,6 +69,7 @@
 <script>
 import axios from "axios";
 import CodemirrorApp from "@/components/page/Codemirror";
+import bus from "@/utils/bus";
 
 export default {
   name: "ProblemDetail",
@@ -75,10 +79,12 @@ export default {
       problemId:"",
       problemDetail:{},
       activeNames:['1','2','3'],
+      input:''
     }
   },
   mounted() {
-    this.problemId = this.$route.params.problemId;
+    // this.problemId = this.$route.params.problemId;
+    this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
     console.log("this.problemId", this.problemId);
     let param = {};
     param.titleId = this.problemId;
@@ -89,7 +95,40 @@ export default {
       }}).then(function(resp){
       console.log("resp:",resp);
       _this.problemDetail = resp.data
-    })
+    });
+
+    //获取编辑框输入的字符
+    bus.$on('input', msg => {
+      //console.log(msg)
+      this.input=msg
+    });
+
+
+    //获取选择的语音种类
+    bus.$on('language-change', msg => {
+      console.log(msg)
+      this.language=msg
+    });
+  },
+  methods:{
+    submitTitle(){
+      console.log(this.input)
+      axios.post(this.url+'/title/submit/',{
+        //选题
+        titleId: this.problemId,
+        //输入内容
+        input: this.input,
+        language: this.language
+      })
+          .then(function(res){
+            console.log(res.data);
+            console.log(res.data.description);
+            console.log(res.data.errorCode);
+          })
+          .catch(function(err){
+            console.log(err);
+          });
+    },
   }
 }
 </script>
@@ -98,5 +137,10 @@ export default {
 .el-collapse{
   word-wrap: break-word;
   width: 100%;
+}
+.submitButon{
+  float: right;
+  margin-right: 50px;
+  width: fit-content;
 }
 </style>

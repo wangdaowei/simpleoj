@@ -56,7 +56,7 @@ export default {
   methods:{
     handleClick(row) {
       console.log(row);
-
+      localStorage.setItem('problemId',row.titleId);
     }
   },
   mounted(){

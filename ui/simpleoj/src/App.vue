@@ -18,7 +18,7 @@
 
       </el-menu-item>
     </el-menu>
-    <div ><router-view></router-view></div>
+    <div style="height: 100%"><router-view></router-view></div>
   </div>
 </template>
 <script>

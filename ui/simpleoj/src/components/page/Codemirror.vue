@@ -223,7 +223,7 @@ export default {
     .CodeMirror
       flex-grow 1
       z-index 1
-      height 600px
+      height 100%
       .CodeMirror-code
         line-height 19px
         
