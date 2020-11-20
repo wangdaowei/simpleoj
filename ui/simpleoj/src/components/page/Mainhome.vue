@@ -30,43 +30,63 @@
                     <span> {{ selectedTitle.titleLevel }}</span>
                 </div>
             </el-collapse-item>
-            <el-collapse-item title="描述1" name="3">
+            <el-collapse-item title="描述1:" name="3">
                 <div>
                     <span> {{ selectedTitle.titleExample }}</span>
                 </div>
            </el-collapse-item>
-            <el-collapse-item title="描述2" name="4">
+            <el-collapse-item title="描述2:" name="4">
                 <div>
                     <span> {{ selectedTitle.titleExample2 }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="提交状态" name="5">
+            <el-collapse-item title="提交状态:" name="5">
                 <div>
                     <span> {{ selectedTitle.submitStatus }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="输入" name="6">
+            <el-collapse-item title="报错信息:" name="11">
+                <div>
+                    <span> {{ selectedTitle.errorInfo }}</span>
+                </div>
+            </el-collapse-item>
+
+            <el-collapse-item title="编译耗时:（ms）" name="6">
+                <div>
+                    <span> {{ selectedTitle.compileTime }}</span>
+                </div>
+            </el-collapse-item>
+
+            <el-collapse-item title="运行耗时:（ms）" name="7">
+                <div>
+                    <span> {{ selectedTitle.runTime }}</span>
+                </div>
+            </el-collapse-item>
+
+            <el-collapse-item title="输入:" name="8">
                 <div>
                     <span> {{ selectedTitle.input }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="输出" name="7">
+            <el-collapse-item title="输出:" name="9">
                 <div>
                     <span> {{ selectedTitle.output }}</span>
                 </div>
             </el-collapse-item>
 
-            <el-collapse-item title="预期结果" name="8">
+            <el-collapse-item title="预期结果:" name="10">
                 <div>
                     <span> {{ selectedTitle.rightOutput }}</span>
                 </div>
             </el-collapse-item>
-        </el-collapse>
 
+            
+        </el-collapse>
       </el-col>
+
       
       <!-- 编辑器及提交信息 -->
       <el-col :span="12">
@@ -86,6 +106,7 @@
   import bus from '../../utils/bus';
   import CodemirrorApp from './Codemirror.vue';
   import axios from 'axios';
+  //import Vue from 'vue';
   export default {
     name: 'dashboard',
     data() {
@@ -95,7 +116,7 @@
         url:'http://localhost:8181',
         language: 'java',
         //试题栏激活列表
-        activeNames: ['1','2','3'],
+        activeNames: ['1','2','3','4'],
         input: '',
 	selectedTitleId: '',
         test: 'ceshishuju',
@@ -119,6 +140,9 @@
             input:'',
             output:'',
             rightOutput:'',
+            compileTime:'',
+            runTime:'',
+            errorInfo:''
         },
 
       };
@@ -169,14 +193,13 @@
 
         selectTitleChange(){
             this.selectedTitle=this.options[this.value-1]
-            console.log(this.selectedTitle)
-            console.log(this.options)
-            console.log(this.value)
+            this.activeNames=['1','2','3','4']
 
 
         },
 
         submitTitle(){
+            const _this = this;
             if(this.selectedTitle.titleId==''){
               alert("请先选择题目再提交！");
               return;
@@ -191,10 +214,14 @@
             })
             .then(function(res){
               console.log(res.data);
-              console.log(res.data.description);
               console.log(res.data.errorCode);
+              _this.selectedTitle.output=res.data.output;
+              _this.selectedTitle.errorInfo=res.data.errorInfo;
+              _this.selectedTitle.compileTime=res.data.compileTime;
+              _this.selectedTitle.runTime=res.data.runTime;
               
-              
+              //Vue.set(_this.selectedTitle,"output",res.data.output);
+              _this.activeNames=['5','6','7','8','9','10','11'];
               
             })
             .catch(function(err){
