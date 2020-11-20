@@ -106,8 +106,8 @@ export default {
     }
   },
   mounted() {
-    // this.problemId = this.$route.params.problemId;
-    this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
+    this.problemId = this.$route.query.problemId;
+    // this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
     console.log("this.problemId", this.problemId);
     let param = {};
     param.titleId = this.problemId;
