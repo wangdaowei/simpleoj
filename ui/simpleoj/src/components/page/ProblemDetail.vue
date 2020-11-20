@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%;height: 100%">
+  <div style="width: 100%;height: 95%">
     <el-container style="height: 100%">
 <!--      <el-header style="background-color: #cccccc;height: 20px"><p>PROBLEM DETAIL:{{problemId}}</p></el-header>-->
       <el-container style="height: 100%">
