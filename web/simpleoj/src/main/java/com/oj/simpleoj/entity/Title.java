@@ -30,6 +30,19 @@ public class Title {
     @Column(name="title_example2")
     private String titleExample2;
 
+
+    @Column(name="title_input")
+    private String titleInput;
+
+    @Column(name="title_expect_output")
+    private String titleExpectOutput;
+
+    @Column(name="title_code_pre_java")
+    private String titleCodePreJava;
+
+    @Column(name="title_code_end_java")
+    private String titleCodeEndJava;
+
     @Column(name="add_time")
     private Date addTime;
 

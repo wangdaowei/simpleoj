@@ -43,16 +43,40 @@ public class TitleHandler {
 
     @PostMapping("/submit")
     public HashMap<String, Object> submit(@RequestBody Map<String,Object> dataMap){
-        System.out.println("题号："+dataMap.get("titleId"));
-
-        System.out.println("输入："+dataMap.get("input"));
-
-        Integer titleId= (Integer) dataMap.get("titleId");
-
+        System.out.println("requestMap："+dataMap.toString());
+        //题号
+        String titleId= (String) dataMap.get("titleId");
+        //期望输出
+        String titleExpectOutput= (String) dataMap.get("titleExpectOutput");
+        //预设输入
+        String titleInput= (String) dataMap.get("titleInput");
+        //用户编辑内容
         String input= (String) dataMap.get("input");
 
         String language= (String) dataMap.get("language");
 
+        //题设外置代码
+        String titleCodePre="";
+        if("java".equals(language)){
+            titleCodePre= (String) dataMap.get("titleCodePreJava");
+        }
+
+
+        //titleInput以换行分割，每一行对应一个 String args[] 参数： java  "args[0]" "[1]"
+        String[] titleInputParam=titleInput.split("\n");
+        String args0=null;
+        String args1=null;
+        String args2=null;
+        for (int i=0;i<titleInputParam.length;i++){
+            if(i==0){
+                args0=titleInputParam[i];
+            }else if(i==1){
+                args1=titleInputParam[i];
+            }else if(i==2){
+                args2=titleInputParam[i];
+            }
+        }
+        System.out.println("args0:"+args0+" args1:"+args1+"args2: "+args2);
         String languageShell=absoluteDir+"/common/"+language+"/"+language+".sh";
         System.out.println("shell:"+languageShell);
 
@@ -60,21 +84,6 @@ public class TitleHandler {
         HashMap<String,Object> resultMap=new HashMap<String,Object>();
         String absoluteDirName="/test/test/test/test"; //担心未赋值删错文件
 
-//        selectedTitle: {
-//            titleId: '',
-//                    titleName: '',
-//                    titleLevel: '',
-//                    titleDescribe: '',
-//                    titleExample: '',
-//                    titleExample2: '',
-//                    --submitStatus:'',
-//                    input:'',
-//                    output:'',
-//                    rightOutput:'',
-//                    --compileTime:'',
-//                    --runTime:'',
-//                    errorInfo:''
-//        },
 
         try{
             //创建临时目录
@@ -89,11 +98,19 @@ public class TitleHandler {
             String runFilePath=absoluteDirName+"/t."+houZhui;
 
             FileOutputStream  fos=new FileOutputStream(runFilePath);
+            //MainClass 文件前部分
+            fos.write(titleCodePre.getBytes());
+            //文件后部分
             fos.write(input.getBytes());
             fos.close();
 
             //执行shell脚本
-            String  cmd="sh "+languageShell+" "+absoluteDirName;
+            String  cmd="sh "+languageShell
+                    +" "+absoluteDirName
+                    +" "+args0
+                    +" "+args1
+                    +" "+args2;
+
             ShellResult result=ShellUtils.runShell(cmd);
             List<String> description=result.getDescription();
             int errorCode=result.getErrorCode();
@@ -109,7 +126,8 @@ public class TitleHandler {
                 StringBuffer errorInfo=new StringBuffer();
                 //执行失败的话，组装errorInfo
                 for (String tmp: description) {
-                    errorInfo.append(tmp+"\n");
+                    String tmpShort=tmp.substring(tmp.indexOf('.')+1);
+                    errorInfo.append(tmpShort+" <br/>");
                 }
                 resultMap.put("errorInfo",errorInfo);
             }
