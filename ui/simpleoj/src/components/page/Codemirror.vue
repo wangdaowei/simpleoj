@@ -125,6 +125,13 @@ export default {
     }
   },
   mounted () {
+    //获取初始化code
+    bus.$on('titleCodeEndJava', msg => {
+      console.log("titleCodeEndJava:",msg)
+      this.code=msg
+      this.coder.setValue(this.value || this.code)
+    });
+
     // 初始化
     this._initialize()
     const that = this
@@ -145,6 +152,9 @@ export default {
 
     // 初始化
     _initialize () {
+      
+      console.log("code::",this.code)
+
       // 初始化编辑器实例，传入需要被实例化的文本域对象和默认配置
       this.coder = CodeMirror.fromTextArea(this.$refs.textarea, this.options)
       // 编辑器赋值

@@ -38,7 +38,7 @@
 
             <el-collapse-item title="报错信息:" name="11">
                 <div>
-                    <span> {{ problemDetail.errorInfo }}</span>
+                    <span  v-html="problemDetail.errorInfo"></span>
                 </div>
             </el-collapse-item>
 
@@ -56,7 +56,7 @@
 
             <el-collapse-item title="输入:" name="8">
                 <div>
-                    <span> {{ problemDetail.input }}</span>
+                    <span> {{ problemDetail.titleInput }}</span>
                 </div>
             </el-collapse-item>
 
@@ -68,7 +68,7 @@
 
             <el-collapse-item title="预期结果:" name="10">
                 <div>
-                    <span> {{ problemDetail.rightOutput }}</span>
+                    <span> {{ problemDetail.titleExpectOutput }}</span>
                 </div>
             </el-collapse-item>
 
@@ -102,24 +102,13 @@ export default {
       activeNames:['1','2','3','4'],
       url:'http://localhost:8181',
       input:'',
-      language: 'java'
+      language: 'java',
+      titleCodeEndJava: ''
     }
   },
   mounted() {
-    this.problemId = this.$route.query.problemId;
-    // this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
-    console.log("this.problemId", this.problemId);
-    let param = {};
-    param.titleId = this.problemId;
-    const _this = this;
-    axios.get(this.url+'/title/findOne/',{
-      params: {
-        titleId: this.problemId
-      }}).then(function(resp){
-      console.log("resp:",resp);
-      _this.problemDetail = resp.data
-    });
-
+    
+    this._initTitle()
     //获取编辑框输入的字符
     bus.$on('input', msg => {
       //console.log(msg)
@@ -134,14 +123,40 @@ export default {
     });
   },
   methods:{
-    submitTitle(){
-	const _this = this;
+
+    _initTitle ( ) {
+      // this.problemId = this.$route.params.problemId;
+    this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
+    console.log("this.problemId", this.problemId);
+    let param = {};
+    param.titleId = this.problemId;
+    const _this = this;
+    axios.get(this.url+'/title/findOne/',{
+      params: {
+        titleId: this.problemId
+      }}).then(function(resp){
+      console.log("resp:",resp);
+      _this.problemDetail = resp.data
+      _this.titleCodeEndJava=resp.data.titleCodeEndJava
+
+      bus.$emit('titleCodeEndJava', _this.titleCodeEndJava)
+
+    });
+
+    },
+
+  submitTitle(){
+      const _this = this;
       console.log(this.input)
       axios.post(this.url+'/title/submit/',{
         //选题
         titleId: this.problemId,
-        //输入内容
+        titleExpectOutput: this.problemDetail.titleExpectOutput,
+        titleInput: this.problemDetail.titleInput,
+        //输入内容  pre+input  是最终 t.java
         input: this.input,
+        titleCodePreJava: this.problemDetail.titleCodePreJava,
+
         language: this.language
       })
           .then(function(res){

@@ -30,12 +30,12 @@
         <router-link
             :to="{
         name:'ProblemDetail',
-        // params: {
-        //     problemId: scope.row.titleId, // orderNum : this.searchData.orderNo
-        // },
-        query: {
-           problemId: scope.row.titleId, // orderNum : this.searchData.orderNo
-        }
+        params: {
+            problemId: scope.row.titleId, // orderNum : this.searchData.orderNo
+        },
+        // query: {
+        //    key: 'value', // orderNum : this.searchData.orderNo
+        // }
          }">
         <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
         </router-link>
