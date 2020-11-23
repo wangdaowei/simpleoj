@@ -1,8 +1,8 @@
 <template>
+  <div id="tableV" ref="tableV">
   <el-table
       :data="tableData"
-      style="width: 80%;margin-top: 50px;margin-left: 100px"
-      :row-class-name="tableRowClassName">
+      style="width:fit-content;margin-top: 50px;margin-left: 100px">
     <el-table-column
         prop="titleId"
         label="#"
@@ -11,16 +11,18 @@
     <el-table-column
         prop="titleName"
         label="题名"
-        width="180">
+        width="280">
     </el-table-column>
     <el-table-column
         prop="passRate"
         label="通过率"
-        width="180">
+        width="100">
     </el-table-column>
     <el-table-column
         prop="titleLevel"
-        label="难度">
+        label="难度"
+        width="100"
+    >
     </el-table-column>
     <el-table-column
         fixed="right"
@@ -42,6 +44,7 @@
       </template>
     </el-table-column>
   </el-table>
+  </div>
 </template>
 
 <script>

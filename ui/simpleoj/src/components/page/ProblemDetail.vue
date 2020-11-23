@@ -76,10 +76,13 @@
         <div ref="middle" id="middle"></div>
         <div id="right" ref="right">
         <el-container style="height: 100%">
-          <el-main style="background-color: bisque;height:80%"><CodemirrorApp /></el-main>
+          <el-main style="height:100%"><CodemirrorApp ref="codemirror" /></el-main>
 
-          <el-footer style="background-color: dodgerblue;float: bottom;height: 20%">
-            <div ><el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button></div>
+          <el-footer style="float: bottom;">
+            <div >
+              <el-button type="primary" plain @click="resetCode()">恢复</el-button>
+              <el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button>
+            </div>
             <div></div>
           </el-footer>
         </el-container>
@@ -184,6 +187,7 @@ export default {
       console.log("resp:",resp);
       _this.problemDetail = resp.data
       _this.titleCodeEndJava=resp.data.titleCodeEndJava
+      localStorage.setItem('titleCodeEndJava', _this.titleCodeEndJava);
 
       bus.$emit('titleCodeEndJava', _this.titleCodeEndJava)
 
@@ -225,6 +229,9 @@ export default {
       };
     },
 
+    resetCode(){
+      this.$refs.codemirror.setCodeValue();
+    },
   submitTitle(){
       const _this = this;
       console.log(this.input)
@@ -271,6 +278,7 @@ export default {
 .el-collapse{
   word-wrap: break-word;
   width: 100%;
+  padding-left: 10px;
 }
 .submitButon{
   float: right;
@@ -278,7 +286,6 @@ export default {
   width: fit-content;
 }
 #left{
-  background-color: aquamarine;
   width: 50%;
   height: 100%;
 }
@@ -304,4 +311,5 @@ export default {
   height: 100%;
   width: 100%;
 }
+
 </style>

@@ -78,8 +78,8 @@ export default {
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true },
         hintOptions: {
           // 当匹配只有一项的时候是否自动补全
-          completeSingle: false
-        }
+          completeSingle: true
+        },
         // 快捷键 可提供三种模式 sublime、emacs、vim
         // keyMap: 'sublime'
       },
@@ -143,6 +143,10 @@ export default {
   }
   },
   methods: {
+    setCodeValue(){
+      this.code = localStorage.getItem("titleCodeEndJava");
+      this.coder.setValue(this.value || this.code)
+    },
     submitTextarea(){
       console.log(this.textarea);
       // 通过bus发送信息
