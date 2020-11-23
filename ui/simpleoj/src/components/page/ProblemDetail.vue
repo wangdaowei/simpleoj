@@ -1,9 +1,7 @@
 <template>
-  <div style="width: 100%;height: 95%">
-    <el-container style="height: 100%">
-<!--      <el-header style="background-color: #cccccc;height: 20px"><p>PROBLEM DETAIL:{{problemId}}</p></el-header>-->
-      <el-container style="height: 100%">
-        <el-main style="background-color: aquamarine;width:0">
+  <div style="width: 100%;height: 100%">
+      <el-container ref="app1" style="height: 100%">
+        <div id="left" class="overflow" ref="left">
            <!-- 题目信息 -->
         <el-collapse  class="el-collapse" v-model="activeNames" >
             <el-collapse-item  title="题目：" name="1">
@@ -74,16 +72,19 @@
 
             
         </el-collapse>
-        </el-main>
-        <el-container style="width: 0;">
+        </div>
+        <div ref="middle" id="middle"></div>
+        <div id="right" ref="right">
+        <el-container style="height: 100%">
           <el-main style="background-color: bisque;height:80%"><CodemirrorApp /></el-main>
 
           <el-footer style="background-color: dodgerblue;float: bottom;height: 20%">
-            <el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button>
+            <div ><el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button></div>
+            <div></div>
           </el-footer>
         </el-container>
+        </div>
       </el-container>
-    </el-container>
   </div>
 </template>
 
@@ -97,7 +98,7 @@ export default {
   components: {CodemirrorApp},
   data(){
     return{
-      problemId:"",
+      problemId:-1,
       problemDetail:{},
       activeNames:['1','2','3','4'],
       //url:'http://106.55.166.98:10089',
@@ -124,6 +125,8 @@ export default {
       console.log(msg)
       this.language=msg
     });
+
+    this.resizeContent();
   },
   methods:{
     submitDialog(){
@@ -168,8 +171,8 @@ export default {
       },
 
     _initTitle ( ) {
-      // this.problemId = this.$route.params.problemId;
-    this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
+      this.problemId = parseInt(this.$route.query.problemId);
+    // this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
     console.log("this.problemId", this.problemId);
     let param = {};
     param.titleId = this.problemId;
@@ -188,6 +191,40 @@ export default {
 
     },
 
+    resizeContent(){
+      var resize = this.$refs.middle;
+      var left = this.$refs.left;
+      var right = this.$refs.right;
+      var box = this.$refs.app1.$el;
+      resize.onmousedown = function(e){
+
+        var startX = e.clientX;
+        resize.left = resize.offsetLeft;
+
+        document.onmousemove = function(e){
+          var endX = e.clientX;
+
+          var moveLen = resize.left + (endX - startX);
+          var maxT = box.clientWidth - resize.offsetWidth;
+          if(moveLen<200) moveLen = 200;
+          if(moveLen>maxT-400) moveLen = maxT-400;
+
+          resize.style.left = moveLen;
+          left.style.width = moveLen + "px";
+          right.style.width = (box.clientWidth - moveLen - 5) + "px";
+          console.log("movLen:" , moveLen)
+        }
+        document.onmouseup = function(evt){
+          evt.stopPropagation()
+          document.onmousemove = null;
+          document.onmouseup = null;
+          resize.releaseCapture && resize.releaseCapture();
+        }
+        resize.setCapture && resize.setCapture();
+        return false;
+      };
+    },
+
   submitTitle(){
       const _this = this;
       console.log(this.input)
@@ -195,7 +232,7 @@ export default {
         //选题
         titleId: this.problemId,
         titleExpectOutput: this.problemDetail.titleExpectOutput,
-        titleInput: this.problemDetail.titleInput, 
+        titleInput: this.problemDetail.titleInput,
         //输入内容  pre+input  是最终 t.java
         input: this.input,
         titleCodePreJava: this.problemDetail.titleCodePreJava,
@@ -217,8 +254,8 @@ export default {
             _this.submitResult=res.data.submitResult;
 
             _this.submitDialog();
-            
-            
+
+
             //Vue.set(_this.problemDetail,"output",res.data.output);
             _this.activeNames=['5','6','7','8','9','10','11'];
           })
@@ -239,5 +276,32 @@ export default {
   float: right;
   margin-right: 50px;
   width: fit-content;
+}
+#left{
+  background-color: aquamarine;
+  width: 50%;
+  height: 100%;
+}
+
+.overflow{
+  overflow: auto;
+}
+
+#middle{
+  cursor: col-resize;
+  height:100%;
+  position: relative;
+  width: 3px;
+  background-color: lightcoral;
+}
+
+#right{
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
+#app1{
+  height: 100%;
+  width: 100%;
 }
 </style>

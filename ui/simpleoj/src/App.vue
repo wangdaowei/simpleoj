@@ -1,7 +1,8 @@
 <template>
-  <div id="app">
+  <div ref="app" style="height: 100%">
+    <div ref="menuV" style="height: fit-content">
     <el-menu
-        :default-active="activeIndex2"
+        ref="menu"
         class="el-menu-demo"
         router mode="horizontal"
         @select="handleSelect"
@@ -18,14 +19,16 @@
 
       </el-menu-item>
     </el-menu>
-    <div style="height: 100%"><router-view></router-view></div>
+    </div>
+    <div id="contentV" style="height: 100%"><router-view></router-view></div>
   </div>
 </template>
 <script>
 
   export default {
     data(){
-      return{navList:[
+      return{
+        navList:[
           {name:'/components/page/Main',navItem:'首页'},
           {name:'/components/page/ProblemList',navItem:'题库'},
           {name:'/components/page/',navItem:'提交记录'},
@@ -39,6 +42,14 @@
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       }
+    },
+    mounted() {
+      let me = this;
+      // document.getElementById("contentV").style.height = ('#app').height()-('#menuV').height();
+      console.log("height",me.$refs.menu.$el.clientHeight);
+      console.log("appheight", me.$refs.app.offsetHeight);
+      //特坑的高度设置
+      document.getElementById('contentV').style.height = me.$refs.app.offsetHeight-me.$refs.menu.$el.clientHeight + "px";
     }
   };
 </script>
