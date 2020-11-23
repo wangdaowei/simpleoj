@@ -61,6 +61,8 @@ export default {
   },
   mounted(){
     const _this = this
+    
+    //axios.get('http://106.55.166.98:10089/title/findAll/').then(function(resp){
     axios.get('http://localhost:8181/title/findAll/').then(function(resp){
       console.log(resp)
       _this.tableData = resp.data

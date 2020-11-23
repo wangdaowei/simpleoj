@@ -9,7 +9,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/mainhome',
+      redirect: '/components/page/ProblemList',
     },
     {
       path: '/',
@@ -25,6 +25,7 @@ export default new Router({
     },
     {
       path:'/components/page/ProblemList',
+      name:'ProblemList',
       component:ProblemList
     },{
       path:'/components/page/ProblemDetail',

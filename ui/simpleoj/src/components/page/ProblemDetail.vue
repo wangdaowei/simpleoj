@@ -100,10 +100,13 @@ export default {
       problemId:"",
       problemDetail:{},
       activeNames:['1','2','3','4'],
+      //url:'http://106.55.166.98:10089',
       url:'http://localhost:8181',
       input:'',
       language: 'java',
-      titleCodeEndJava: ''
+      titleCodeEndJava: '',
+      errorCode: '',
+      submitResult: ''
     }
   },
   mounted() {
@@ -123,6 +126,46 @@ export default {
     });
   },
   methods:{
+    submitDialog(){
+      if(this.errorCode==0){
+        if(this.submitResult=="通过"){
+          this.submitSuccess();
+        }else if(this.submitResult=="解答错误"){
+          this.submitWarning();
+        }
+      }else{
+        if(this.submitResult=="编译错误"){
+          this.submitError();
+        }
+      }
+
+    },
+
+    submitSuccess() {
+        this.$notify({
+          title: '通过',
+          message: '恭喜您成功通过本题。',
+          type: 'success',
+          duration: 0
+        });
+      },
+
+    submitWarning() {
+        this.$notify({
+          title: '解答错误',
+          message: '编译运行成功，但是结果与预期不符。',
+          type: 'warning',
+          duration: 0
+        });
+      },
+
+    submitError() {
+        this.$notify.error({
+          title: '编译错误',
+          message: '编译未通过，请结合左侧报错信息进行修改。',
+          duration: 0
+        });
+      },
 
     _initTitle ( ) {
       // this.problemId = this.$route.params.problemId;
@@ -152,7 +195,7 @@ export default {
         //选题
         titleId: this.problemId,
         titleExpectOutput: this.problemDetail.titleExpectOutput,
-        titleInput: this.problemDetail.titleInput,
+        titleInput: this.problemDetail.titleInput, 
         //输入内容  pre+input  是最终 t.java
         input: this.input,
         titleCodePreJava: this.problemDetail.titleCodePreJava,
@@ -161,7 +204,6 @@ export default {
       })
           .then(function(res){
             console.log(res.data);
-            console.log(res.data.description);
             console.log(res.data.errorCode);
 
             console.log(res.data.errorCode);
@@ -169,6 +211,13 @@ export default {
             _this.problemDetail.errorInfo=res.data.errorInfo;
             _this.problemDetail.compileTime=res.data.compileTime;
             _this.problemDetail.runTime=res.data.runTime;
+            _this.problemDetail.submitStatus=res.data.submitResult;
+
+            _this.errorCode=res.data.errorCode;
+            _this.submitResult=res.data.submitResult;
+
+            _this.submitDialog();
+            
             
             //Vue.set(_this.problemDetail,"output",res.data.output);
             _this.activeNames=['5','6','7','8','9','10','11'];
