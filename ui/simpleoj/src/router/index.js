@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import ProblemList from "@/components/page/ProblemList";
 import ProblemDetail from "@/components/page/ProblemDetail";
+import SubmitRecord from "@/components/page/SubmitRecord";
 // 引入路由插件
 Vue.use(Router);
 
@@ -31,6 +32,10 @@ export default new Router({
       path:'/components/page/ProblemDetail',
       name:'ProblemDetail',
       component:ProblemDetail
+    },{
+      path: '/components/page/SubmitRecord',
+      name: 'SubmitRecord',
+      component:SubmitRecord
     }
   ],
 });

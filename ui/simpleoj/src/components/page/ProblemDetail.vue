@@ -3,6 +3,8 @@
       <el-container ref="app1" style="height: 100%">
         <div id="left" class="overflow" ref="left">
            <!-- 题目信息 -->
+          <el-tabs v-model="activeTab" @tab-click="tabClick()">
+            <el-tab-pane label="题目详情" name="problemDetail" >
         <el-collapse  class="el-collapse" v-model="activeNames" >
             <el-collapse-item  title="题目：" name="1">
                 <div>
@@ -72,6 +74,9 @@
 
             
         </el-collapse>
+            </el-tab-pane>
+            <el-tab-pane label="提交记录" name="submissionRecord" style="padding-left: 10px"><SubmitRecord ref="submitV" /></el-tab-pane>
+          </el-tabs>
         </div>
         <div ref="middle" id="middle"></div>
         <div id="right" ref="right">
@@ -95,12 +100,14 @@
 import axios from "axios";
 import CodemirrorApp from "@/components/page/Codemirror";
 import bus from "@/utils/bus";
+import SubmitRecord from "@/components/page/SubmitRecord";
 
 export default {
   name: "ProblemDetail",
-  components: {CodemirrorApp},
+  components: {SubmitRecord, CodemirrorApp},
   data(){
     return{
+      activeTab: 'problemDetail',
       problemId:-1,
       problemDetail:{},
       activeNames:['1','2','3','4'],
@@ -132,6 +139,13 @@ export default {
     this.resizeContent();
   },
   methods:{
+    tabClick(){
+      console.log("tab,event:", this.activeTab);
+      if(this.activeTab == 'submissionRecord'){
+        console.log(this.problemId);
+        this.$refs.submitV.setProblemId(this.problemId);
+      }
+    },
     submitDialog(){
       if(this.errorCode==0){
         if(this.submitResult=="通过"){
@@ -177,6 +191,7 @@ export default {
       this.problemId = parseInt(this.$route.query.problemId);
     // this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
     console.log("this.problemId", this.problemId);
+    this.$refs.submitV.setProblemId(this.problemId);
     let param = {};
     param.titleId = this.problemId;
     const _this = this;
@@ -210,8 +225,9 @@ export default {
 
           var moveLen = resize.left + (endX - startX);
           var maxT = box.clientWidth - resize.offsetWidth;
-          if(moveLen<200) moveLen = 200;
+          if(moveLen<200) moveLen = 0;
           if(moveLen>maxT-400) moveLen = maxT-400;
+          if(moveLen > 780) moveLen = 780;
 
           resize.style.left = moveLen;
           left.style.width = moveLen + "px";
@@ -261,7 +277,7 @@ export default {
             _this.submitResult=res.data.submitResult;
 
             _this.submitDialog();
-
+            _this.$refs.submitV.refreshSubmission();
 
             //Vue.set(_this.problemDetail,"output",res.data.output);
             _this.activeNames=['5','6','7','8','9','10','11'];

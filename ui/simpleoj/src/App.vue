@@ -31,7 +31,7 @@
         navList:[
           {name:'/components/page/Main',navItem:'首页'},
           {name:'/components/page/ProblemList',navItem:'题库'},
-          {name:'/components/page/',navItem:'提交记录'},
+          {name:'/components/page/SubmitRecord',navItem:'提交记录'},
         ]}
     },
     components: {
