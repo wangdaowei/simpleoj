@@ -52,6 +52,12 @@
                 </div>
             </el-collapse-item>
 
+            <el-collapse-item title="占用内存：" name="7">
+                <div>
+                    <span> {{ problemDetail.VmRSS }}</span>
+                </div>
+            </el-collapse-item>
+
             <el-collapse-item title="输入:" name="8">
                 <div>
                     <span> {{ problemDetail.titleInput }}</span>
@@ -80,8 +86,8 @@
 
           <el-footer style="float: bottom;">
             <div >
-              <el-button type="primary" plain @click="resetCode()">恢复</el-button>
-              <el-button class="submitButon" @click="submitTitle()" type="primary" icon="el-icon-s-promotion">提交</el-button>
+              <el-button class="refreshButon" type="primary" plain @click="resetCode()" icon="el-icon-refresh-right">恢复</el-button>
+              <el-button class="submitButon" @click="submitTitle()" v-loading.fullscreen.lock="fullscreenLoading" type="primary" icon="el-icon-s-promotion">提交</el-button>
             </div>
             <div></div>
           </el-footer>
@@ -101,14 +107,17 @@ export default {
   components: {CodemirrorApp},
   data(){
     return{
+      fullscreenLoading: false,
       problemId:-1,
       problemDetail:{},
       activeNames:['1','2','3','4'],
       //url:'http://106.55.166.98:10089',
-      url:'http://localhost:8181',
+      url:'http://localhost:10089',
+      //url:'http://localhost:8181',
       input:'',
       language: 'java',
       titleCodeEndJava: '',
+      titleCodeEndPython: '',
       errorCode: '',
       submitResult: ''
     }
@@ -127,6 +136,11 @@ export default {
     bus.$on('language-change', msg => {
       console.log(msg)
       this.language=msg
+      if(this.language=="java"){
+        bus.$emit('titleCodeEnd-msg', this.titleCodeEndJava)
+      }else if(this.language=="python"){
+        bus.$emit('titleCodeEnd-msg', this.titleCodeEndPython)
+      }
     });
 
     this.resizeContent();
@@ -186,10 +200,15 @@ export default {
       }}).then(function(resp){
       console.log("resp:",resp);
       _this.problemDetail = resp.data
-      _this.titleCodeEndJava=resp.data.titleCodeEndJava
-      localStorage.setItem('titleCodeEndJava', _this.titleCodeEndJava);
 
-      bus.$emit('titleCodeEndJava', _this.titleCodeEndJava)
+      _this.titleCodeEndJava=resp.data.titleCodeEndJava
+      _this.titleCodeEndPython=resp.data.titleCodeEndPython
+      
+      localStorage.setItem('titleCodeEndJava', _this.titleCodeEndJava);
+      localStorage.setItem('titleCodeEndPython', _this.titleCodeEndPython);
+      
+
+      bus.$emit('titleCodeEnd-msg', _this.titleCodeEndJava)
 
     });
 
@@ -230,19 +249,43 @@ export default {
     },
 
     resetCode(){
-      this.$refs.codemirror.setCodeValue();
+      this.$confirm('此操作会将编辑框代码还原, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //this.$refs.codemirror.setCodeValue();
+          if(this.language=="java"){
+            bus.$emit('titleCodeEnd-msg', this.titleCodeEndJava)
+          }else if(this.language=="python"){
+            bus.$emit('titleCodeEnd-msg', this.titleCodeEndPython)
+          }
+
+          this.$message({
+            type: 'success',
+            message: '还原成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消还原'
+          });          
+        });
+      
     },
   submitTitle(){
       const _this = this;
+      _this.fullscreenLoading = true;
       console.log(this.input)
       axios.post(this.url+'/title/submit/',{
         //选题
         titleId: this.problemId,
         titleExpectOutput: this.problemDetail.titleExpectOutput,
-        titleInput: this.problemDetail.titleInput,
+        titleInput: this.problemDetail.titleInput, 
         //输入内容  pre+input  是最终 t.java
         input: this.input,
         titleCodePreJava: this.problemDetail.titleCodePreJava,
+        titleCodePrePython: this.problemDetail.titleCodePrePython,
 
         language: this.language
       })
@@ -256,18 +299,21 @@ export default {
             _this.problemDetail.compileTime=res.data.compileTime;
             _this.problemDetail.runTime=res.data.runTime;
             _this.problemDetail.submitStatus=res.data.submitResult;
-
+            _this.problemDetail.VmRSS=res.data.VmRSS;
+            
             _this.errorCode=res.data.errorCode;
             _this.submitResult=res.data.submitResult;
 
             _this.submitDialog();
-
-
+            
+            
             //Vue.set(_this.problemDetail,"output",res.data.output);
             _this.activeNames=['5','6','7','8','9','10','11'];
+            _this.fullscreenLoading = false;
           })
           .catch(function(err){
             console.log(err);
+            _this.fullscreenLoading = false;
           });
     },
   }
@@ -277,12 +323,19 @@ export default {
 <style scoped>
 .el-collapse{
   word-wrap: break-word;
-  width: 100%;
-  padding-left: 10px;
+  width: 95%;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 .submitButon{
   float: right;
   margin-right: 50px;
+  width: fit-content;
+}
+.refreshButon{
+  float: left;
+  left: 180px;
+  position: relative;
   width: fit-content;
 }
 #left{
@@ -297,10 +350,13 @@ export default {
 #middle{
   cursor: col-resize;
   height:100%;
+  left:5px;
   position: relative;
-  width: 3px;
-  background-color: lightcoral;
+  width: 2px;
+  z-index: 3;
+  background-color: rgba(130, 134, 126, 0.425)
 }
+
 
 #right{
   width: 50%;

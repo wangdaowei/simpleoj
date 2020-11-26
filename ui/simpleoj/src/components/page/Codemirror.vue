@@ -20,7 +20,8 @@ import bus from '../../utils/bus';
 import 'codemirror/lib/codemirror.css'
 // 引入主题后还需要在 options 中指定主题才会生效
 import 'codemirror/theme/cobalt.css'
-import 'codemirror/theme/idea.css'
+//import 'codemirror/theme/idea.css'
+import '../../assets/css/idea.css'
 
 // 需要引入具体的语法高亮库才会有对应的语法高亮效果
 // codemirror 官方其实支持通过 /addon/mode/loadmode.js 和 /mode/meta.js 来实现动态加载对应语法高亮库
@@ -85,49 +86,53 @@ export default {
       },
       // 支持切换的语法高亮类型，对应 JS 已经提前引入
       // 使用的是 MIME-TYPE ，不过作为前缀的 text/ 在后面指定时写死了
-      modes: [{
-        value: 'css',
-        label: 'CSS'
-      }, {
-        value: 'javascript',
-        label: 'Javascript'
-      }, {
-        value: 'html',
-        label: 'XML/HTML'
-      }, {
+      modes: [
+      {
         value: 'x-java',
         label: 'Java'
-      }, {
-        value: 'x-objectivec',
-        label: 'Objective-C'
-      }, {
+      },{
         value: 'x-python',
         label: 'Python'
-      }, {
-        value: 'x-rsrc',
-        label: 'R'
-      }, {
-        value: 'x-sh',
-        label: 'Shell'
-      }, {
-        value: 'x-sql',
-        label: 'SQL'
-      }, {
-        value: 'x-swift',
-        label: 'Swift'
-      }, {
-        value: 'x-vue',
-        label: 'Vue'
-      }, {
-        value: 'markdown',
-        label: 'Markdown'
-      }]
+      }
+      // ,
+      // {
+      //   value: 'css',
+      //   label: 'CSS'
+      // }, {
+      //   value: 'javascript',
+      //   label: 'Javascript'
+      // }, {
+      //   value: 'html',
+      //   label: 'XML/HTML'
+      // },{
+      //   value: 'x-objectivec',
+      //   label: 'Objective-C'
+      // },{
+      //   value: 'x-rsrc',
+      //   label: 'R'
+      // }, {
+      //   value: 'x-sh',
+      //   label: 'Shell'
+      // }, {
+      //   value: 'x-sql',
+      //   label: 'SQL'
+      // }, {
+      //   value: 'x-swift',
+      //   label: 'Swift'
+      // }, {
+      //   value: 'x-vue',
+      //   label: 'Vue'
+      // }, {
+      //   value: 'markdown',
+      //   label: 'Markdown'
+      // }
+      ]
     }
   },
   mounted () {
     //获取初始化code
-    bus.$on('titleCodeEndJava', msg => {
-      console.log("titleCodeEndJava:",msg)
+    bus.$on('titleCodeEnd-msg', msg => {
+      console.log("titleCodeEnd:",msg)
       this.code=msg
       this.coder.setValue(this.value || this.code)
     });
@@ -143,10 +148,6 @@ export default {
   }
   },
   methods: {
-    setCodeValue(){
-      this.code = localStorage.getItem("titleCodeEndJava");
-      this.coder.setValue(this.value || this.code)
-    },
     submitTextarea(){
       console.log(this.textarea);
       // 通过bus发送信息
@@ -234,10 +235,13 @@ export default {
     flex-grow 1
     display flex
     position relative
+    
     .CodeMirror
+    
       flex-grow 1
       z-index 1
       height 100%
+      left -20px
       .CodeMirror-code
         line-height 19px
         
