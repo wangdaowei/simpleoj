@@ -3,6 +3,8 @@
       <el-container ref="app1" style="height: 100%">
         <div id="left" class="overflow" ref="left">
            <!-- 题目信息 -->
+          <el-tabs v-model="activeTab" @tab-click="tabClick()">
+            <el-tab-pane label="题目详情" name="problemDetail" >
         <el-collapse  class="el-collapse" v-model="activeNames" >
             <el-collapse-item  title="题目：" name="1">
                 <div>
@@ -78,6 +80,9 @@
 
             
         </el-collapse>
+            </el-tab-pane>
+            <el-tab-pane label="提交记录" name="submissionRecord" style="padding-left: 10px"><SubmitRecord ref="submitV" /></el-tab-pane>
+          </el-tabs>
         </div>
         <div ref="middle" id="middle"></div>
         <div id="right" ref="right">
@@ -101,12 +106,14 @@
 import axios from "axios";
 import CodemirrorApp from "@/components/page/Codemirror";
 import bus from "@/utils/bus";
+import SubmitRecord from "@/components/page/SubmitRecord";
 
 export default {
   name: "ProblemDetail",
-  components: {CodemirrorApp},
+  components: {SubmitRecord, CodemirrorApp},
   data(){
     return{
+      activeTab: 'problemDetail',
       fullscreenLoading: false,
       problemId:-1,
       problemDetail:{},
@@ -146,6 +153,13 @@ export default {
     this.resizeContent();
   },
   methods:{
+    tabClick(){
+      console.log("tab,event:", this.activeTab);
+      if(this.activeTab == 'submissionRecord'){
+        console.log(this.problemId);
+        this.$refs.submitV.setProblemId(this.problemId);
+      }
+    },
     submitDialog(){
       if(this.errorCode==0){
         if(this.submitResult=="通过"){
@@ -191,8 +205,7 @@ export default {
       this.problemId = parseInt(this.$route.query.problemId);
     // this.problemId = localStorage.getItem('problemId'); //刷新数据可获取
     console.log("this.problemId", this.problemId);
-    let param = {};
-    param.titleId = this.problemId;
+    this.$refs.submitV.setProblemId(this.problemId);
     const _this = this;
     axios.get(this.url+'/title/findOne/',{
       params: {
@@ -203,10 +216,10 @@ export default {
 
       _this.titleCodeEndJava=resp.data.titleCodeEndJava
       _this.titleCodeEndPython=resp.data.titleCodeEndPython
-      
+
       localStorage.setItem('titleCodeEndJava', _this.titleCodeEndJava);
       localStorage.setItem('titleCodeEndPython', _this.titleCodeEndPython);
-      
+
 
       bus.$emit('titleCodeEnd-msg', _this.titleCodeEndJava)
 
@@ -269,9 +282,9 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消还原'
-          });          
+          });
         });
-      
+
     },
   submitTitle(){
       const _this = this;
@@ -281,7 +294,7 @@ export default {
         //选题
         titleId: this.problemId,
         titleExpectOutput: this.problemDetail.titleExpectOutput,
-        titleInput: this.problemDetail.titleInput, 
+        titleInput: this.problemDetail.titleInput,
         //输入内容  pre+input  是最终 t.java
         input: this.input,
         titleCodePreJava: this.problemDetail.titleCodePreJava,
@@ -300,13 +313,13 @@ export default {
             _this.problemDetail.runTime=res.data.runTime;
             _this.problemDetail.submitStatus=res.data.submitResult;
             _this.problemDetail.VmRSS=res.data.VmRSS;
-            
+
             _this.errorCode=res.data.errorCode;
             _this.submitResult=res.data.submitResult;
 
             _this.submitDialog();
-            
-            
+            _this.$refs.submitV.refreshSubmission();
+
             //Vue.set(_this.problemDetail,"output",res.data.output);
             _this.activeNames=['5','6','7','8','9','10','11'];
             _this.fullscreenLoading = false;

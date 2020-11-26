@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import ProblemList from "@/components/page/ProblemList";
 import ProblemDetail from "@/components/page/ProblemDetail";
-import SubmitHistory from "@/components/page/SubmitHistory";
+import SubmitRecord from "@/components/page/SubmitRecord";
 // 引入路由插件
 Vue.use(Router);
 
@@ -33,9 +33,9 @@ export default new Router({
       name:'ProblemDetail',
       component:ProblemDetail
     },{
-      path:'/components/page/SubmitHistory',
-      name:'SubmitHistory',
-      component:SubmitHistory
+      path:'/components/page/SubmitRecord',
+      name:'SubmitRecord',
+      component:SubmitRecord
     }
   ],
 });

@@ -71,6 +71,7 @@ export default {
         theme: 'idea',
         // 显示行号
         lineNumbers: true,
+        autoRefresh: true,
         line: true,
         styleActiveLine: true,
         styleSelectedText: false,
@@ -148,6 +149,15 @@ export default {
   }
   },
   methods: {
+
+    setCode(code){
+      this.code = code;
+      this.coder.setValue(this.value || this.code);
+      const _this = this;
+      setTimeout(function() {
+        _this.coder.refresh();
+      }, 1);
+    },
     submitTextarea(){
       console.log(this.textarea);
       // 通过bus发送信息
