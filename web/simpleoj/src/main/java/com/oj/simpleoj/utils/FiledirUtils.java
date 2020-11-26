@@ -37,6 +37,8 @@ public class FiledirUtils {
         String out="noSupport";
         if("java".equals(language)){
             out="java";
+        }else if("python".equals(language)){
+            out="py";
         }
 
         return  out;

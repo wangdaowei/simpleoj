@@ -64,6 +64,8 @@ public class TitleHandler {
         String titleCodePre="";
         if("java".equals(language)){
             titleCodePre= (String) dataMap.get("titleCodePreJava");
+        }else if("python".equals(language)){
+            titleCodePre= (String) dataMap.get("titleCodePrePython");
         }
 
 
@@ -103,10 +105,15 @@ public class TitleHandler {
             String runFilePath=absoluteDirName+"/t."+houZhui;
 
             FileOutputStream  fos=new FileOutputStream(runFilePath);
+//            //MainClass 文件前部分
+//            fos.write(titleCodePre.getBytes());
+//            //文件后部分
+//            fos.write(input.getBytes());
             //MainClass 文件前部分
-            fos.write(titleCodePre.getBytes());
-            //文件后部分
             fos.write(input.getBytes());
+
+            //文件后部分
+            fos.write(titleCodePre.getBytes());
             fos.close();
 
             //执行shell脚本
@@ -118,6 +125,11 @@ public class TitleHandler {
 
             ShellResult result=ShellUtils.runShell(cmd);
             List<String> description=result.getDescription();
+
+            //此种情况为直接 exit 1 设置为内存超过限制
+            if(null!=description && description.size()==0){
+                description.add("运行程序使用内存已超过限制，请修改代码后重试！");
+            }
             int errorCode=result.getErrorCode();
 
             resultMap.put("errorCode",errorCode);
@@ -127,6 +139,14 @@ public class TitleHandler {
                     String[] tmpspilt=tmp.split(":");
                     resultMap.put(tmpspilt[0],tmpspilt[1]);
                 }
+
+                //比对一下结果和预期是否相同
+                if(titleExpectOutput!=null && titleExpectOutput.equals(resultMap.get("output"))){
+                    resultMap.put("submitResult","通过");
+                }else{
+                    resultMap.put("submitResult","解答错误");
+                }
+
             }else{ //执行失败
                 StringBuffer errorInfo=new StringBuffer();
                 //执行失败的话，组装errorInfo
@@ -135,10 +155,11 @@ public class TitleHandler {
                     errorInfo.append(tmpShort+" <br/>");
                 }
                 resultMap.put("errorInfo",errorInfo);
+                resultMap.put("submitResult","编译错误");
             }
 
         }catch (Exception e){
-
+            e.printStackTrace();
 
         }finally {
             File file =new File(absoluteDirName);

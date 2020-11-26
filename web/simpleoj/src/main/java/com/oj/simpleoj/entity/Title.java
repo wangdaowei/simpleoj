@@ -43,6 +43,14 @@ public class Title {
     @Column(name="title_code_end_java")
     private String titleCodeEndJava;
 
+    ////////////////////
+    @Column(name="title_code_pre_python")
+    private String titleCodePrePython;
+
+    @Column(name="title_code_end_python")
+    private String titleCodeEndPython;
+    ////////////////////
+
     @Column(name="add_time")
     private Date addTime;
 
