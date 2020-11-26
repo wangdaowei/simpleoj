@@ -1,5 +1,6 @@
 package com.oj.simpleoj.controller;
 
+import com.oj.simpleoj.services.SubmissionService;
 import com.oj.simpleoj.shell.ShellResult;
 import org.apache.log4j.Logger;
 import com.oj.simpleoj.entity.Title;
@@ -30,6 +31,10 @@ public class TitleHandler {
     @Autowired
     private TitleRepository titleRepository;
 
+    @Autowired
+    private SubmissionService submissionService;
+
+
     @GetMapping("/findOne")
     public Optional<Title> findOne(Integer titleId){
         return titleRepository.findById(titleId);
@@ -45,7 +50,7 @@ public class TitleHandler {
     public HashMap<String, Object> submit(@RequestBody Map<String,Object> dataMap){
         System.out.println("requestMap："+dataMap.toString());
         //题号
-        String titleId= (String) dataMap.get("titleId");
+        Integer titleId= (Integer) dataMap.get("titleId");
         //期望输出
         String titleExpectOutput= (String) dataMap.get("titleExpectOutput");
         //预设输入
@@ -140,7 +145,7 @@ public class TitleHandler {
             FiledirUtils.deleteFile(file);
         }
 
-
+        submissionService.createSubmission(titleId,input, language,resultMap);
         return resultMap;
     }
 }
