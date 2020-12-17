@@ -2,7 +2,7 @@
   <!-- 公共头部组件 -->
   <div class="header">
 
-    <!-- 系统logo -->
+    <!-- 系统logoo -->
     <div class="logo">simpOJ</div>
 
     <!-- 头部组件右边功能区 -->

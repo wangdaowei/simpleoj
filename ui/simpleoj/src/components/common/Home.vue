@@ -1,7 +1,7 @@
 <template>
   <!-- 公共Home组件 -->
   <div class="wrapper">
-    <!-- 头部组件 -->
+    <!-- 头部组件0 -->
     <v-head></v-head>
     <router-view></router-view>
   </div>
