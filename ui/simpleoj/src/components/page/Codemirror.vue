@@ -38,6 +38,16 @@ import 'codemirror/mode/sql/sql.js'
 import 'codemirror/mode/swift/swift.js'
 import 'codemirror/mode/vue/vue.js'
 
+ //代码补全提示
+  import 'codemirror/addon/hint/anyword-hint.js';
+  import 'codemirror/addon/hint/css-hint.js';
+  import 'codemirror/addon/hint/html-hint.js';
+  import 'codemirror/addon/hint/javascript-hint.js';
+  import 'codemirror/addon/hint/show-hint.css';
+  import 'codemirror/addon/hint/show-hint.js';
+  import 'codemirror/addon/hint/sql-hint.js';
+  import 'codemirror/addon/hint/xml-hint.js';
+
 // 尝试获取全局实例
 const CodeMirror = window.CodeMirror || _CodeMirror
 
@@ -80,10 +90,11 @@ export default {
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true },
         hintOptions: {
           // 当匹配只有一项的时候是否自动补全
-          completeSingle: true
+          completeSingle: false
         },
         // 快捷键 可提供三种模式 sublime、emacs、vim
-        // keyMap: 'sublime'
+        // keyMap: 'sublime' 
+        extraKeys: {"Ctrl": "autocomplete"},
       },
       // 支持切换的语法高亮类型，对应 JS 已经提前引入
       // 使用的是 MIME-TYPE ，不过作为前缀的 text/ 在后面指定时写死了
