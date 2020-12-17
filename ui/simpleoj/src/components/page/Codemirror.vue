@@ -106,38 +106,6 @@ export default {
         value: 'x-python',
         label: 'Python'
       }
-      // ,
-      // {
-      //   value: 'css',
-      //   label: 'CSS'
-      // }, {
-      //   value: 'javascript',
-      //   label: 'Javascript'
-      // }, {
-      //   value: 'html',
-      //   label: 'XML/HTML'
-      // },{
-      //   value: 'x-objectivec',
-      //   label: 'Objective-C'
-      // },{
-      //   value: 'x-rsrc',
-      //   label: 'R'
-      // }, {
-      //   value: 'x-sh',
-      //   label: 'Shell'
-      // }, {
-      //   value: 'x-sql',
-      //   label: 'SQL'
-      // }, {
-      //   value: 'x-swift',
-      //   label: 'Swift'
-      // }, {
-      //   value: 'x-vue',
-      //   label: 'Vue'
-      // }, {
-      //   value: 'markdown',
-      //   label: 'Markdown'
-      // }
       ]
     }
   },
@@ -194,6 +162,11 @@ export default {
           //console.log('input change!!!')
           bus.$emit('input', this.code)
         }
+      })
+
+      let c = this.coder;
+      this.coder.on('keypress', function () {
+          c.showHint()
       })
 
       // 尝试从父容器获取语法类型
