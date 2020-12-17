@@ -60,6 +60,10 @@ public class TitleHandler {
 
         String language= (String) dataMap.get("language");
 
+        ////////
+        StringBuffer errorInfo=new StringBuffer();
+        StringBuffer errorInfoNobr=new StringBuffer();
+
         //题设外置代码
         String titleCodePre="";
         if("java".equals(language)){
@@ -148,13 +152,14 @@ public class TitleHandler {
                 }
 
             }else{ //执行失败
-                StringBuffer errorInfo=new StringBuffer();
+
                 //执行失败的话，组装errorInfo
                 for (String tmp: description) {
                     String tmpShort=tmp.substring(tmp.indexOf('.')+1);
                     errorInfo.append(tmpShort+" <br/>");
+                    errorInfoNobr.append(tmpShort);
                 }
-                resultMap.put("errorInfo",errorInfo);
+
                 resultMap.put("submitResult","编译错误");
             }
 
@@ -165,8 +170,10 @@ public class TitleHandler {
             File file =new File(absoluteDirName);
             FiledirUtils.deleteFile(file);
         }
-
+        resultMap.put("errorInfo",errorInfo);
+        resultMap.put("errorInfoNobr",errorInfoNobr);
         submissionService.createSubmission(titleId,input, language,resultMap);
+
         return resultMap;
     }
 }

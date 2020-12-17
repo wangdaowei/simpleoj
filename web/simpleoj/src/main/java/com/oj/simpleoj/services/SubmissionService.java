@@ -1,7 +1,6 @@
 package com.oj.simpleoj.services;
 
 import com.oj.simpleoj.entity.Submission;
-import com.oj.simpleoj.mapper.SubmissionMapper;
 import com.oj.simpleoj.repository.SubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,9 +43,9 @@ public class SubmissionService {
         Submission submission = new Submission(
                 titleId,
                 (String)resultMap.get("runTime"),
-                (String)resultMap.get("usedMemory"),
+                (String)resultMap.get("VmRSS"),
                 (String)resultMap.get("submitResult"),
-                resultMap.get("errorInfo").toString(),
+                resultMap.get("errorInfoNobr").toString(),
                 input,
                 language
                 );

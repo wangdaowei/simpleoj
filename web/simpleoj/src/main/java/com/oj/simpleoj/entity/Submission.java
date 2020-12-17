@@ -33,6 +33,10 @@ public class Submission  implements Serializable {
    	@Column(name = "submit_time" )
 	private Timestamp submitTime;
 
+
+	@Column(name = "compile_time" )
+	private String compile_time;
+
    	@Column(name = "used_time" )
 	private String usedTime;
 

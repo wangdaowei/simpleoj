@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://106.55.166.98:3306/ojdb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: ojdb
-    password: arihLMkbxNpt3XBH
+    url: jdbc:mysql:///ojdb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
